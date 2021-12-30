@@ -17,7 +17,7 @@ router.post('/expenses',verify,async(req,res)=>{
             where date= $1`,[date]);
             console.log("***enteredRx", enteredExpenseType.rows);
             enteredExpenseType.rows.map((entered) => {
-                    if(entered.expense_type.trim() == expenseType.trim()){
+                    if(entered.expense_type.trim() === expenseType.trim()){
                         isEntered = true;
                     }
             })
