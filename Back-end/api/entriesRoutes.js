@@ -6,9 +6,7 @@ const pool = require('../config/db');
 //create new entry for expenses
 router.post('/expenses',verify,async(req,res)=>{
     let{expenseType, date, amount}= req.body;
-    //validation
-    if(Number.isNaN(expenseType) === false) return res.send("only words allowed for 'expense type'");
-    if(Number.isNaN(amount) === true) return res.send("only figures allowed in 'amount'")
+    
     //getting the customer id and email from req.user contained in the "verify" function
     let customerId = req.user.id;
         let isEntered = false;
@@ -18,9 +16,8 @@ router.post('/expenses',verify,async(req,res)=>{
             `SELECT expense_type
             FROM expenses
             where date= $1`,[date]);
-            console.log("***enteredRx", enteredExpenseType.rows);
             enteredExpenseType.rows.map((entered) => {
-                    if(entered.expense_type.trim() === expenseType.trim()){
+                    if(entered['expense_type'].trim() === expenseType.trim()){
                         isEntered = true;
                     }
             })
@@ -65,10 +62,6 @@ router.patch('/expenses/:expenseId',verify,async(req,res)=>{
     let{expenseType, amount, date}= req.body;
     let{expenseId} = req.params;
 
-    //validation
-    if(Number.isNaN(expenseType) === false) return res.send("only words allowed for 'expense type'");
-    if(Number.isNaN(amount) === true) return res.send("only figures allowed in 'amount'")
-   
     try{
         await pool.query(
             `UPDATE expenses
