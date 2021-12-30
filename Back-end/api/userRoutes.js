@@ -5,7 +5,6 @@ const{signUpValidation,signInValidation} = require('../../validation');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
 //SIGNUP
 router.post('/signUp',async(req,res) =>{
     const validation = signUpValidation(req.body);
@@ -59,9 +58,12 @@ router.post('/signIn',async(req,res) =>{
               const token = jwt.sign({
                   id:User.rows[0].id,
                   email:User.rows[0].email,
-                },process.env.TOKEN_SECRETE,{
-                    expiresIn: '1h' 
-                });
+                },process.env.TOKEN_SECRETE
+                // ,{
+                //     expiresIn: '1h' 
+                // }
+                
+                );
                 console.log(token);
                 res.send({"auth_token":token})
         }catch(err){
