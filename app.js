@@ -6,13 +6,9 @@ const db = require('./Back-end/config/db');
 const userRouter = require('./Back-end/api/userRoutes');
 const entriesRouter = require('./Back-end/api/entriesRoutes');
 
-let corsOptions = {
-    origin: 'https://smartu-react.herokuapp.com'
-}
-
 //middlewear
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(cors());
 
 //Route middlewear
 app.use('/user', userRouter);
