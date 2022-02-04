@@ -64,6 +64,7 @@ router.post('/signIn',async(req,res) =>{
                 // }
                 
                 );
+                console.log("signed in")
                 console.log(token);
                 res.send({"auth_token":token})
         }catch(err){
