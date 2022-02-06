@@ -4,8 +4,8 @@ const router = express.Router();
 const pool = require('../config/db');
 
 //create new entry for expenses
-router.post('/expenses',verify,async(req,res)=>{
-    let{expenseType, date, amount}= req.body;
+router.post('/expenses', verify, async (req, res) => {
+    let { expenseType, date, amount }= req.body;
     
     //getting the customer id and email from req.user contained in the "verify" function
     let customerId = req.user.id;
@@ -15,7 +15,7 @@ router.post('/expenses',verify,async(req,res)=>{
         let enteredExpenseType  = await pool.query(
             `SELECT expense_type
             FROM expenses
-            where date= $1`,[date]);
+            where date= $1`, [date]);
             enteredExpenseType.rows.map((entered) => {
                     if(entered['expense_type'].trim() === expenseType.trim()){
                         isEntered = true;
@@ -30,7 +30,7 @@ router.post('/expenses',verify,async(req,res)=>{
         await pool.query(
             `INSERT INTO expenses(expense_type, amount, date, user_id) 
             VALUES($1, $2, $3, $4) RETURNING *`,
-            [expenseType, amount, date, customerId],(err,result)=>{
+            [expenseType, amount, date, customerId],(err, result) => {
                     if(err) throw err
                     res.send(result.rows);
                 })           
@@ -40,14 +40,14 @@ router.post('/expenses',verify,async(req,res)=>{
 });
     
 //get all expenses of particular user
-router.get('/expenses',verify,async(req,res)=>{
+router.get('/expenses',verify, async (req, res) => {
         let customerId = req.user.id;
         try{
             pool.query(`SELECT * 
             FROM expenses
             WHERE user_id  = $1
             ORDER BY e_id ASC`,
-                [customerId],(err,result)=>{
+                [customerId],(err, result) => {
                 if(err) throw err
                 res.send(result.rows);
         })
@@ -58,9 +58,9 @@ router.get('/expenses',verify,async(req,res)=>{
 });
 
 //update expenses
-router.patch('/expenses/:expenseId',verify,async(req,res)=>{
-    let{expenseType, amount, date}= req.body;
-    let{expenseId} = req.params;
+router.patch('/expenses/:expenseId', verify, async (req, res) => {
+    let { expenseType, amount, date } = req.body;
+    let { expenseId } = req.params;
 
     try{
         await pool.query(
@@ -68,7 +68,7 @@ router.patch('/expenses/:expenseId',verify,async(req,res)=>{
             SET  expense_type=$1, amount=$2,
             date=$3
             WHERE e_id = $4 RETURNING *`,
-            [expenseType, amount, date, expenseId],(err,result)=>{
+            [expenseType, amount, date, expenseId], (err, result) => {
                     if(err) throw err;
                     res.send(result.rows);
                 })
@@ -79,13 +79,13 @@ router.patch('/expenses/:expenseId',verify,async(req,res)=>{
 });
 
 //delete multiple and single expenses
-router.delete('/expenses',verify,async(req,res)=>{
+router.delete('/expenses', verify, async (req, res) => {
     let {keyId} = req.body;
     let array1 = [];
     keyId.map((id) => {
         try{
              pool.query(`DELETE FROM expenses
-             WHERE e_id IN($1) RETURNING*`, [id],(err,result)=>{
+             WHERE e_id IN($1) RETURNING*`, [id], (err, result) => {
                 array1.push(id);
                 if(err) throw err
                 if(array1.length === keyId.length){
@@ -100,13 +100,13 @@ router.delete('/expenses',verify,async(req,res)=>{
 });
 
  //delete all expenses
- router.delete('/expenses/all',verify,async(req,res)=>{
+ router.delete('/expenses/all', verify, async (req, res) => {
     let userId = req.user.id;
     
     try{
          pool.query(`DELETE FROM expenses
          WHERE user_id  = $1`,
-          [userId],(err,result)=>{
+          [userId], (err, result) => {
             if(err) throw err
             console.log("deleted successfully");
             res.send(result.rows);

@@ -2,7 +2,7 @@ const {Pool} = require('pg');
 require('dotenv/config');
 
 let pool;
-if (process.env.NODE_ENV === 'production'){
+if (process.env.NODE_ENV === 'production') {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: {
@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'production'){
     })
 }
 
-pool.connect((err)=>{
+pool.connect((err) => {
     if(err) return console.log(`connection failed: ${err.message}`)
     console.log(`connected to database`);
 });
